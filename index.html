@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>QRankala - Rankala Lake Water Quality Monitoring</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 0;
+            }
+        
+            .container {
+              width: 100%;
+              max-width: 1200px;
+              margin: 0 auto;
+              padding: 16px;
+            }
+        
+            @media (max-width: 768px) {
+              .container {
+                padding: 10px;
+                font-size: 16px;
+              }
+            }
+          </style>
+        </head>
+        <body>
+        
+          <div class="container">
+            
+          </div>
+        
+       </head>
+    <body>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+        <!-- ✅ Leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+        <!-- ✅ Leaflet JS -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+        <!-- ✅ Optional: Style for map height -->
+        <style>
+            #pollutionMap {
+                height: 400px;
+            }
+        </style>
+    
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    
+<body>
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>QRankala</h1>
+            <h2>Safeguarding the Soul of Kolhapur</h2>
+            <p>Rankala Lake isn't just a waterbody. It's a part of Kolhapur's identity. A morning walk, a childhood memory, a festival moment – it all flows through Rankala. QRankala is our humble effort to preserve its purity with technology.</p>
+        </div>
+    </header>
+
+    <section class="dashboard">
+        <div class="section-header">
+            <h2>Current Water Quality Parameters</h2>
+            <div class="edit-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="editToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span>Edit Mode</span>
+            </div>
+        </div>
+
+        <div class="parameters-grid">
+            <!-- pH Card -->
+            <div class="parameter-card" data-param="ph">
+                <div class="param-header">
+                    <i class="fas fa-water"></i>
+                    <h3>pH Level</h3>
+                </div>
+                <div class="param-value">
+                    <input type="number" id="phValue" value="7.2" step="0.1" disabled>
+                    <span class="param-unit">pH</span>
+                </div>
+                <div class="param-status safe">
+                    <span>Safe</span>
+                </div>
+                <div class="param-range">
+                    <span>Ideal: 6.5 - 8.5</span>
+                </div>
+            </div>
+
+            <!-- TDS Card -->
+            <div class="parameter-card" data-param="tds">
+                <div class="param-header">
+                    <i class="fas fa-tint"></i>
+                    <h3>Total Dissolved Solids</h3>
+                </div>
+                <div class="param-value">
+                    <input type="number" id="tdsValue" value="320" step="1" disabled>
+                    <span class="param-unit">mg/L</span>
+                </div>
+                <div class="param-status safe">
+                    <span>Safe</span>
+                </div>
+                <div class="param-range">
+                    <span>Ideal: &lt; 500 mg/L</span>
+                </div>
+            </div>
+
+            <!-- Temperature Card -->
+            <div class="parameter-card" data-param="temp">
+                <div class="param-header">
+                    <i class="fas fa-thermometer-half"></i>
+                    <h3>Temperature</h3>
+                </div>
+                <div class="param-value">
+                    <input type="number" id="tempValue" value="26.5" step="0.1" disabled>
+                    <span class="param-unit">°C</span>
+                </div>
+                <div class="param-status safe">
+                    <span>Safe</span>
+                </div>
+                <div class="param-range">
+                    <span>Ideal: &lt; 30°C</span>
+                </div>
+            </div>
+
+            <!-- Turbidity Card -->
+            <div class="parameter-card" data-param="turbidity">
+                <div class="param-header">
+                    <i class="fas fa-cloud"></i>
+                    <h3>Turbidity</h3>
+                </div>
+                <div class="param-value">
+                    <input type="number" id="turbidityValue" value="4.2" step="0.1" disabled>
+                    <span class="param-unit">NTU</span>
+                </div>
+                <div class="param-status safe">
+                    <span>Safe</span>
+                </div>
+                <div class="param-range">
+                    <span>Ideal: &lt; 5 NTU</span>
+                </div>
+            </div>
+
+            <!-- Nitrate Card -->
+            <div class="parameter-card" data-param="nitrate">
+                <div class="param-header">
+                    <i class="fas fa-flask"></i>
+                    <h3>Nitrate</h3>
+                </div>
+                <div class="param-value">
+                    <input type="number" id="nitrateValue" value="8.5" step="0.1" disabled>
+                    <span class="param-unit">mg/L</span>
+                </div>
+                <div class="param-status moderate">
+                    <span>Moderate</span>
+                </div>
+                <div class="param-range">
+                    <span>Ideal: &lt; 10 mg/L</span>
+                </div>
+            </div>
+
+            <!-- Phosphate Card -->
+            <div class="parameter-card" data-param="phosphate">
+                <div class="param-header">
+                    <i class="fas fa-atom"></i>
+                    <h3>Phosphate</h3>
+                </div>
+                <div class="param-value">
+                    <input type="number" id="phosphateValue" value="0.12" step="0.01" disabled>
+                    <span class="param-unit">mg/L</span>
+                </div>
+                <div class="param-status safe">
+                    <span>Safe</span>
+                </div>
+                <div class="param-range">
+                    <span>Ideal: &lt; 0.2 mg/L</span>
+                </div>
+            </div>
+
+            <!-- DO Card -->
+            <div class="parameter-card" data-param="do">
+                <div class="param-header">
+                    <i class="fas fa-wind"></i>
+                    <h3>Dissolved Oxygen</h3>
+                </div>
+                <div class="param-value">
+                    <input type="number" id="doValue" value="6.8" step="0.1" disabled>
+                    <span class="param-unit">mg/L</span>
+                </div>
+                <div class="param-status safe">
+                    <span>Safe</span>
+                </div>
+                <div class="param-range">
+                    <span>Ideal: &gt; 5 mg/L</span>
+                </div>
+            </div>
+
+            <!-- BOD Card -->
+            <div class="parameter-card" data-param="bod">
+                <div class="param-header">
+                    <i class="fas fa-bacteria"></i>
+                    <h3>BOD</h3>
+                </div>
+                <div class="param-value">
+                    <input type="number" id="bodValue" value="3.2" step="0.1" disabled>
+                    <span class="param-unit">mg/L</span>
+                </div>
+                <div class="param-status safe">
+                    <span>Safe</span>
+                </div>
+                <div class="param-range">
+                    <span>Ideal: &lt; 5 mg/L</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="prediction">
+        <div class="section-header">
+            <h2>Future Water Quality Prediction</h2>
+            <button id="simulateBtn" class="btn-primary">Simulate Future Quality</button>
+        </div>
+
+        <div class="prediction-content">
+            <div class="chart-container">
+                <canvas id="qualityChart"></canvas>
+            </div>
+            <div class="prediction-result" id="predictionResult">
+                <p>Click "Simulate Future Quality" to see predicted water quality based on current parameters.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="water-status" id="waterStatus">
+        <div class="status-banner safe">
+            <i class="fas fa-check-circle"></i>
+            <h3>Current Water Status: Safe for Drinking</h3>
+            <p>All parameters are within acceptable limits.</p>
+        </div>
+    </section>
+
+    <section class="pollution-sources">
+        <div class="section-header">
+            <h2>Pollution Sources Affecting Rankala Lake</h2>
+            <p>These are the major nalas (drains) and idol immersion points that contribute to pollution in Rankala Lake</p>
+        </div>
+        <div class="map-container">
+            <div style="border-radius: 20px;"><img style="border-radius: 20px;" src="map.jpg" alt=""></div>
+        </div>
+        <div class="sources-list">
+            <h3>Major Pollution Sources:</h3>
+            <ul>
+                <li><strong>NALA 1</strong> - Connects from WARD BETTZER area</li>
+                <li><strong>NALA 2</strong> - Near Ganpati Visarjan Lake</li>
+                <li><strong>NALA 3</strong> - From Ambi Tank area</li>
+                <li><strong>Ganpati Visarjan Lake</strong> - Major idol immersion point</li>
+                <li><strong>Hip Petrol & CMS Pump</strong> - Potential chemical runoff</li>
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <p>QRankala - Rankala Lake Water Quality Monitoring System</p>
+        <p>© 2025 An Initiative by Students of Civil & Environmental Engineering KIT Kolhapur</p>
+    </footer>
+    <!-- <script>
+                document.addEventListener('DOMContentLoaded', function() {
+            // ===== EDIT MODE TOGGLE =====
+            const editToggle = document.getElementById('editToggle');
+            const parameterInputs = document.querySelectorAll('.parameter-card input');
+            
+            editToggle.addEventListener('change', function() {
+                const isEditMode = this.checked;
+                
+                parameterInputs.forEach(input => {
+                    input.disabled = !isEditMode;
+                    input.closest('.parameter-card').classList.toggle('editable', isEditMode);
+                });
+            })
+            // ===== MAP INITIALIZATION =====
+            const map = L.map('pollutionMap').setView([16.7000, 74.2333], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Add markers (nalas, immersion points)
+            L.marker([16.7000, 74.2333]).addTo(map).bindPopup("<b>Rankala Lake</b>").openPopup();
+            L.marker([16.7015, 74.2300]).addTo(map).bindPopup("<b>NALA 1</b>");
+            L.marker([16.6980, 74.2350]).addTo(map).bindPopup("<b>NALA 2</b>");
+            L.marker([16.7020, 74.2380]).addTo(map).bindPopup("<b>NALA 3</b>");
+            L.marker([16.6975, 74.2340]).addTo(map).bindPopup("<b>Ganpati Visarjan Point</b>");
+            L.marker([16.6990, 74.2310]).addTo(map).bindPopup("<b>CMS Pump</b>");
+
+            // Draw connecting lines
+            L.polyline([[16.7015, 74.2300], [16.7000, 74.2333]], {color: 'red'}).addTo(map);
+            L.polyline([[16.6980, 74.2350], [16.7000, 74.2333]], {color: 'red'}).addTo(map);
+            L.polyline([[16.7020, 74.2380], [16.7000, 74.2333]], {color: 'red'}).addTo(map);
+
+            // ===== CHART & SIMULATION =====
+            const ctx = document.getElementById('qualityChart').getContext('2d');
+            const qualityChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: ['Current'], datasets: [] },
+                options: { responsive: true, scales: { y: { beginAtZero: false } } }
+            });
+
+            document.getElementById('simulateBtn').addEventListener('click', simulateFutureQuality);
+
+            function simulateFutureQuality() {
+                const params = ['ph', 'tds', 'do', 'temp', 'turbidity', 'bod'];
+                const currentValues = {};
+                params.forEach(param => {
+                    currentValues[param] = parseFloat(document.getElementById(`${param}Value`).value);
+                });
+
+                qualityChart.data = {
+                    labels: ['Current', '+1 Month', '+3 Months', '+6 Months'],
+                    datasets: params.map(param => ({
+                        label: param.toUpperCase(),
+                        data: [
+                            currentValues[param],
+                            currentValues[param] * (1 + (Math.random() * 0.2 - 0.1)),
+                            currentValues[param] * (1 + (Math.random() * 0.3 - 0.15)),
+                            currentValues[param] * (1 + (Math.random() * 0.4 - 0.2))
+                        ],
+                        borderColor: `hsl(${Math.random() * 360}, 70%, 50%)`,
+                        tension: 0.3
+                    }))
+                };
+                qualityChart.update();
+
+                document.getElementById('predictionResult').innerHTML = `
+                    <h4>Projected Trends:</h4>
+                    <p>Based on current measurements:</p>
+                    <ul>
+                        ${params.map(p => `<li>${p.toUpperCase()}: ${currentValues[p] > document.querySelector(`[data-param="${p}"] .param-range span`).textContent.match(/(\d+\.?\d*)/g)?.[0] ? 'Increasing' : 'Stable'}</li>`).join('')}
+                    </ul>
+                `;
+            }
+    
+    </script> -->
+    <script src="script.js"></script>
+</body>
+</html>
